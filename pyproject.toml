@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cuped-vwe-experiments"
+version = "0.1.0"
+description = "Minimal reproducible simulations for CUPED and variance-weighted estimation (VWE) on synthetic A/B-style data."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "matplotlib>=3.8",
+]
+
+[tool.setuptools]
+packages = []
