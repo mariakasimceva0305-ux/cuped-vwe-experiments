@@ -1,44 +1,44 @@
 # CUPED vs VWE Experiments
 
-[Русская версия](#ru) | [English version](#en)
+## Кратко
+Воспроизводимые симуляции для сравнения plain diff, CUPED, VWE и CUPED+VWE на синтетических A/B-данных.
 
-## RU
+## Задача
+Понять, когда использование предэкспериментальных сигналов и variance weighting действительно снижает дисперсию оценки эффекта и улучшает устойчивость вывода.
 
-### О проекте
-Минимальный воспроизводимый исследовательский проект по снижению дисперсии в A/B-оценке: сравнение `plain diff`, `CUPED`, `VWE` и `CUPED+VWE` на синтетических данных.
+## Что улучшено
+- CUPED снижает дисперсию при высокой pre/post корреляции;
+- VWE помогает при гетерогенной шумности;
+- комбинация CUPED+VWE может быть устойчивой в mixed-сценариях.
 
-### Цель
-Проверить, в каких режимах предэкспериментальные сигналы и variance weighting дают статистически более стабильные оценки эффекта.
+## Архитектура
+```mermaid
+flowchart TD
+    A[Параметры симуляции] --> B[Генерация синтетических данных]
+    B --> C[plain diff]
+    B --> D[CUPED]
+    B --> E[VWE]
+    B --> F[CUPED+VWE]
+    C --> G[Сравнение SD/RMSE]
+    D --> G
+    E --> G
+    F --> G
+```
 
-### Гипотезы
-1. CUPED системно снижает дисперсию при достаточной pre/post корреляции.
-2. VWE лучше работает в сценариях с гетерогенной шумностью юнитов.
-3. Комбинация CUPED+VWE даёт более устойчивый RMSE в mixed-сценариях.
+## Метрики и результаты
+Подставить реальные значения из `figures/*.csv`.
 
-### Экспериментальный протокол
-- множественные симуляции с фиксированными seed;
-- истинный эффект по умолчанию: `0`;
-- сравнение по SD/RMSE оценок, таблицы в `figures/*.csv`, графики в `figures/*.png`.
+| Метод | std(estimate) | rmse(estimate) | Относительное снижение дисперсии |
+|---|---:|---:|---:|
+| plain diff | TBD | TBD | 0% |
+| CUPED | TBD | TBD | TBD |
+| VWE | TBD | TBD | TBD |
+| CUPED+VWE | TBD | TBD | TBD |
 
-### Метрики
-- `std(estimate)`
-- `rmse(estimate)`
-- относительное снижение дисперсии к baseline
-
-### Запуск
+## Запуск
 ```bash
 python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/make_figures.py
 ```
-
-## EN
-
-### Overview
-A reproducible simulation benchmark for variance reduction in experiment measurement: `plain diff` vs `CUPED` vs `VWE` vs `CUPED+VWE`.
-
-### Research objective
-Quantify when pre-experiment covariates and variance weighting improve estimator stability under controlled synthetic settings.
-
-### Evaluation
-Repeated Monte-Carlo runs with fixed seeds and comparison by estimator SD/RMSE.
