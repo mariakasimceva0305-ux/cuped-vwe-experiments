@@ -1,58 +1,44 @@
-# cuped-vwe-experiments
+# CUPED vs VWE Experiments
 
-Минимальный воспроизводимый **research companion**: две симуляции на синтетике, где отдельно смотрят на чувствительность **CUPED** и на **VWE** (variance-weighted estimation). Разбор для статьи — в `article_draft.md`; числа там сверены с CSV в `figures/`. Это не библиотека под прод и не пакет для пайплайна — только прозрачный код и заранее сохранённые результаты.
+[Русская версия](#ru) | [English version](#en)
 
-## What this repo is
+## RU
 
-- две явные постановки (корреляция pre/post и сценарий с долей «шумных» пользователей);
-- оценки plain diff, CUPED, VWE и CUPED+VWE;
-- скрипт, который заново строит те же CSV/PNG;
-- сохранённые результаты в `figures/`, чтобы графики открывались без прогона.
+### О проекте
+Минимальный воспроизводимый исследовательский проект по снижению дисперсии в A/B-оценке: сравнение `plain diff`, `CUPED`, `VWE` и `CUPED+VWE` на синтетических данных.
 
-## What this repo is not
+### Цель
+Проверить, в каких режимах предэкспериментальные сигналы и variance weighting дают статистически более стабильные оценки эффекта.
 
-- не новый метод и не сравнение на реальных логах продукта;
-- не руководство «что включать в каждый тест»;
-- не production-grade пакет: без релизов, CI и публичного API.
+### Гипотезы
+1. CUPED системно снижает дисперсию при достаточной pre/post корреляции.
+2. VWE лучше работает в сценариях с гетерогенной шумностью юнитов.
+3. Комбинация CUPED+VWE даёт более устойчивый RMSE в mixed-сценариях.
 
-## Repository structure
+### Экспериментальный протокол
+- множественные симуляции с фиксированными seed;
+- истинный эффект по умолчанию: `0`;
+- сравнение по SD/RMSE оценок, таблицы в `figures/*.csv`, графики в `figures/*.png`.
 
-```text
-cuped-vwe-experiments/
-  README.md
-  LICENSE
-  requirements.txt
-  pyproject.toml
-  article_draft.md
-  src/
-    estimators.py
-    simulate.py
-  scripts/
-    make_figures.py
-  figures/
-    *.csv
-    *.png
-```
+### Метрики
+- `std(estimate)`
+- `rmse(estimate)`
+- относительное снижение дисперсии к baseline
 
-## How to run
-
+### Запуск
 ```bash
 python -m venv .venv
-source .venv/bin/activate   # Linux / macOS
-# Windows (PowerShell): .\.venv\Scripts\Activate.ps1
-
 pip install -r requirements.txt
 python scripts/make_figures.py
 ```
 
-Появятся файлы в `figures/` (CSV и четыре PNG). По умолчанию: `n_units=4000`, `n_sims=300`, `pre_repeats=10`, `seed=42`, истинный эффект `0`.
+## EN
 
-![Снижение дисперсии CUPED относительно plain diff по корреляции pre/post](figures/cuped_variance_reduction.png)
+### Overview
+A reproducible simulation benchmark for variance reduction in experiment measurement: `plain diff` vs `CUPED` vs `VWE` vs `CUPED+VWE`.
 
-![Std оценок в сценарии с 12% «шумных» пользователей (см. CSV)](figures/power_users_sd.png)
+### Research objective
+Quantify when pre-experiment covariates and variance weighting improve estimator stability under controlled synthetic settings.
 
-## Limitations
-
-- выводы привязаны к **нашей симуляции** и не переносятся автоматически на любой продуктовый эксперимент;
-- **VWE** здесь упрощён: дисперсии по юнитам оцениваются с повторных pre-наблюдений, как в `src/estimators.py`;
-- сравнение по RMSE/SD оценки эффекта — не полный учёт bias, стоимости внедрения и интерпретируемости на проде.
+### Evaluation
+Repeated Monte-Carlo runs with fixed seeds and comparison by estimator SD/RMSE.
